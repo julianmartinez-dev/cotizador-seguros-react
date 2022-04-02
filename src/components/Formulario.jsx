@@ -1,10 +1,31 @@
 import { Fragment } from 'react';
 import { MARCAS, YEARS, PLANES } from '../constants';
+import useCotizador from '../hooks/useCotizador';
+import Error from './Error';
 
 const Formulario = () => {
+
+  const { handleChangeDatos, datos,error, setError } = useCotizador();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    if(Object.values(datos).includes('')) {
+      setError('Todos los campos son obligatorios');
+      return;
+    }
+    setError('')
+    
+    //TODO: Cotizar
+  }
+
   return (
     <>
-      <form action="">
+      {error && <Error />}
+
+      <form action=""
+        onSubmit={handleSubmit}
+      >
         <div className=" my-5">
           <label
             htmlFor="marca"
@@ -16,6 +37,8 @@ const Formulario = () => {
             name="marca"
             id="marca"
             className="w-full bg-white p-3 border-gray-400"
+            onChange={handleChangeDatos}
+            value={datos.marca}
           >
             <option value="">--Selecciona Marca---</option>
             {MARCAS.map((marca) => (
@@ -28,15 +51,17 @@ const Formulario = () => {
 
         <div className=" my-5">
           <label
-            htmlFor="marca"
+            htmlFor="year"
             className="block mb-3 font-bold text-gray-400 uppercase"
           >
             Año
           </label>
           <select
-            name="marca"
-            id="marca"
+            name="year"
+            id="year"
             className="w-full bg-white p-3 border-gray-400"
+            onChange={handleChangeDatos}
+            value={datos.year}
           >
             <option value="">--Selecciona Año---</option>
             {YEARS.map((year) => (
@@ -49,7 +74,7 @@ const Formulario = () => {
 
         <div className=" my-5">
           <label
-            htmlFor="marca"
+            htmlFor="plan"
             className="block mb-3 font-bold text-gray-400 uppercase"
           >
             Planes
@@ -58,14 +83,23 @@ const Formulario = () => {
             {PLANES.map((plan) => (
               <Fragment key={plan.id}>
                 <label htmlFor="plan">{plan.nombre}</label>
-                <input type="radio" id="plan" name="plan" value={plan.id} />
+                <input
+                  type="radio"
+                  id="plan"
+                  name="plan"
+                  value={plan.id}
+                  onChange={handleChangeDatos}
+                />
               </Fragment>
             ))}
           </div>
         </div>
 
-        <input type="submit" value="Cotizar" className='py-2 px-6 bg-indigo-400 uppercase font-bold rounded-lg hover:bg-indigo-500 hover:cursor-pointer w-full'/>
-
+        <input
+          type="submit"
+          value="Cotizar"
+          className="py-2 px-6 bg-indigo-400 uppercase font-bold rounded-lg hover:bg-indigo-500 hover:cursor-pointer w-full"
+        />
       </form>
     </>
   );
